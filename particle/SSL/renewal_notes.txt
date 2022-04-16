@@ -1,0 +1,22 @@
+# go here https://gethttpsforfree.com/
+
+# step 1: use email admin@particle.church and paste `account_public.key` as the public key
+
+# step 2:
+openssl req -new -key domain.key -config csr.cnf -out request.csr
+    Country Name (2 letter code) []:US
+    State or Province Name (full name) []:California
+    Locality Name (eg, city) []: #JUST LEAVE BLANK
+    Organization Name (eg, company) []:ParticleChurch
+    Common Name (e.g. server FQDN or YOUR name) []:*.particle.church
+# then paste request.csr into certificate signing request
+
+# follow the rest of the steps, it's just gonna be a bunch of copypasting commands and output
+
+# save the resulting certificates in "fullchain.pem"
+# copy the first certificate into "domain.crt"
+# copy all remaining certificates into "chain.pem"
+
+systemctl restart httpd
+
+# the certificate will expire in 90 days, set a reminder.

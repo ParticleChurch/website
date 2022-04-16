@@ -1,0 +1,29 @@
+# generate a private key, used to verify that all requests in the transaction are from the same person
+openssl genrsa 4096 > account.key
+
+# get the public key 
+openssl rsa -in account.key -pubout > account_public.key
+
+# domain key, used to create the csr
+openssl genrsa 4096 > domain.key
+
+# generate the request (edit csr.cnf first and make sure it has the right domain)
+openssl req -new -key domain.key -config csr.cnf -out request.csr
+    Country Name (2 letter code) []:US
+    State or Province Name (full name) []:California
+    Locality Name (eg, city) []: #JUST LEAVE BLANK
+    Organization Name (eg, company) []:KhronosDevelopment
+    Common Name (e.g. server FQDN or YOUR name) []:*.khronosdevelopment.com
+
+# use this website: https://gethttpsforfree.com/
+
+# save the resulting certificates in "fullchain.pem"
+# copy the first certificate into "domain.crt"
+# copy all remaining certificates into "chain.pem"
+
+# then use this as the apache config:
+# SSLCertificateFile domain.crt
+# SSLCertificateChainFile chain.pem
+# SSLCertificateKeyFile domain.key
+
+# the certificate will expire in 90 days, set a reminder.

@@ -1,0 +1,117 @@
+/* Variable Library */
+:root {
+    /* white colors (lightest to darkest) */
+    --theme-w1: rgb(255, 255, 255);
+    --theme-w2: rgb(235, 235, 235);
+    --theme-w3: rgb(200, 200, 200);
+    
+    /* gray colors (darkest to lightest) */
+    --theme-g0: rgb(0, 0, 0); /* black */
+    --theme-g1: rgb(25, 29, 32);
+    --theme-g2: rgb(40, 42, 44);
+    --theme-g3: rgb(54, 57, 60);
+    
+    /* accent colors (lightest to darkest) */
+    --theme-b0: rgb(208, 239, 255); /* starts at 0 because this is absurdly light, likely not gonna be used */
+    --theme-b1: rgb(42, 157, 244);
+    --theme-b2: rgb(24, 123, 205);
+    --theme-b3: rgb(17, 102, 177);
+    --theme-b4: rgb(3, 37, 76);
+    
+    /* danger colors (lightest to darkest) */
+    --theme-r1: rgb(255,186,186);
+    --theme-r2: rgb(255,123,123);
+    --theme-r3: rgb(255,82,82);
+    --theme-r4: rgb(255,0,0);
+    --theme-r5: rgb(167,0,0);
+    
+    /* text fonts */
+    --theme-text-font: 'Open Sans', sans-serif;
+    
+    /* text sizes */
+    --theme-text-size-small: 12px;
+    --theme-text-size-medium: 16px;
+    --theme-text-size-large: 20px;
+    --theme-text-size-xlarge: 30px;
+    
+    /* text weight */
+    --theme-text-weight-thin: 300;
+    --theme-text-weight-regular: 400;
+    --theme-text-weight-medium: 600;
+    --theme-text-weight-thick: 700;
+    --theme-text-weight-xthick: 800;
+    
+    /* spacing sizes */
+    --theme-spacing-xsmall: 4px;
+    --theme-spacing-small: 8px;
+    --theme-spacing-medium: 12px;
+    --theme-spacing-large: 16px;
+    --theme-spacing-xlarge: 24px;
+    --theme-spacing-xxlarge: 32px;
+}
+
+/* apply colors */
+.theme-w1-bg { background-color: var(--theme-w1); }
+.theme-w2-bg { background-color: var(--theme-w2); }
+.theme-w3-bg { background-color: var(--theme-w3); }
+.theme-w1-fg { color: var(--theme-w1); }
+.theme-w2-fg { color: var(--theme-w2); }
+.theme-w3-fg { color: var(--theme-w3); }
+
+.theme-g0-bg { background-color: var(--theme-g0); }
+.theme-g1-bg { background-color: var(--theme-g1); }
+.theme-g2-bg { background-color: var(--theme-g2); }
+.theme-g3-bg { background-color: var(--theme-g3); }
+.theme-g0-fg { color: var(--theme-g0); }
+.theme-g1-fg { color: var(--theme-g1); }
+.theme-g2-fg { color: var(--theme-g2); }
+.theme-g3-fg { color: var(--theme-g3); }
+
+.theme-b1-bg { background-color: var(--theme-b1); }
+.theme-b2-bg { background-color: var(--theme-b2); }
+.theme-b3-bg { background-color: var(--theme-b3); }
+.theme-b4-bg { background-color: var(--theme-b4); }
+.theme-b5-bg { background-color: var(--theme-b5); }
+.theme-b1-fg { color: var(--theme-b1); }
+.theme-b2-fg { color: var(--theme-b2); }
+.theme-b3-fg { color: var(--theme-b3); }
+.theme-b4-fg { color: var(--theme-b4); }
+.theme-b5-fg { color: var(--theme-b5); }
+
+.theme-r1-bg { background-color: var(--theme-r1); }
+.theme-r2-bg { background-color: var(--theme-r2); }
+.theme-r3-bg { background-color: var(--theme-r3); }
+.theme-r4-bg { background-color: var(--theme-r4); }
+.theme-r5-bg { background-color: var(--theme-r5); }
+.theme-r1-fg { color: var(--theme-r1); }
+.theme-r2-fg { color: var(--theme-r2); }
+.theme-r3-fg { color: var(--theme-r3); }
+.theme-r4-fg { color: var(--theme-r4); }
+.theme-r5-fg { color: var(--theme-r5); }
+
+/* apply text */
+.theme-text { font-family: var(--theme-text-font); font-weight: var(--theme-text-weight-regular); font-size: var(--theme-text-size-medium); }
+
+.theme-text-small { font-family: var(--theme-text-font); font-weight: var(--theme-text-weight-regular); font-size: var(--theme-text-size-small) !important; }
+.theme-text-medium { font-family: var(--theme-text-font); font-weight: var(--theme-text-weight-regular); font-size: var(--theme-text-size-medium) !important; }
+.theme-text-large { font-family: var(--theme-text-font); font-weight: var(--theme-text-weight-regular); font-size: var(--theme-text-size-large) !important; }
+.theme-text-xlarge { font-family: var(--theme-text-font); font-weight: var(--theme-text-weight-regular); font-size: var(--theme-text-size-xlarge) !important; }
+
+.theme-text-thin { font-family: var(--theme-text-font); font-weight: var(--theme-text-weight-thin) !important; font-size: var(--theme-text-size-medium); }
+.theme-text-thick { font-family: var(--theme-text-font); font-weight: var(--theme-text-weight-thick) !important; font-size: var(--theme-text-size-medium); }
+.theme-text-xthick { font-family: var(--theme-text-font); font-weight: var(--theme-text-weight-xthick) !important; font-size: var(--theme-text-size-medium); }
+
+/* by default, all elements will use normal text options */
+html {
+    font-family: var(--theme-text-font);
+    font-weight: var(--theme-text-weight-regular);
+    font-size: var(--theme-text-size-medium);
+}
+
+/* apply horizontal spacers */
+.hspacer-xsmall { display: block; width: 100%; height: var(--theme-spacing-xsmall); }
+.hspacer-small { display: block; width: 100%; height: var(--theme-spacing-small); }
+.hspacer, .hspacer-medium { display: block; width: 100%; height: var(--theme-spacing-medium); }
+.hspacer-large { display: block; width: 100%; height: var(--theme-spacing-large); }
+.hspacer-xlarge { display: block; width: 100%; height: var(--theme-spacing-xlarge); }
+.hspacer-xxlarge { display: block; width: 100%; height: var(--theme-spacing-xxlarge); }

@@ -1,0 +1,129 @@
+html {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.hugged {
+    padding: 0;
+    margin: 0;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.button {
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    
+    border-radius: 5px;
+    padding: 10px;
+    
+    cursor: pointer;
+    opacity: 1;
+    
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.button:hover {
+    opacity: 0.8;
+}
+
+.button[spinner] {
+    cursor: default !important;
+    opacity: inherit !important;
+}
+
+.button[spinner] > * {
+    opacity: 0 !important;
+}
+
+.button[spinner]:before {
+    content: "";
+    position: fixed;
+    display: block;
+    
+    
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 3px solid;
+    border-color: currentColor transparent currentColor transparent;
+    animation: spin 1s linear infinite;
+}
+
+
+.input {
+    border-radius: 5px;
+    padding: 10px;
+    
+    width: 100%;
+    
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    
+    outline: none;
+    border: none;
+    
+    transition: box-shadow 0.2s;
+}
+.input:focus {
+    outline: none;
+    
+    /*box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.2);
+    transition: box-shadow 0.2s;*/
+    border: 1px solid rgb(120, 120, 120);
+    padding: 9px;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+*::-webkit-scrollbar {
+    width: 16px;
+}
+*::-webkit-scrollbar-track {
+    background: var(--theme-scrollbar-track);
+}
+*::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    border: 4px solid transparent;
+    
+    background: var(--theme-scrollbar-grab);
+    background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-scrollbar-grab-hover);
+    background-clip: content-box;
+}

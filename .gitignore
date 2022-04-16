@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+
+particle_bot/bot.log
+particle_bot/active.txt
+
+particle_api/env/
+particle_api/static/*
