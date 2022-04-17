@@ -15,6 +15,7 @@ import discord, inspect, typing
 from discord.ext import commands
 from discord.ext import tasks
 import random
+import re
 
 LOCAL_DIRECTORY = pathlib.Path(__file__).parent
 ACTIVITY_FILE = LOCAL_DIRECTORY / "active.txt"
@@ -171,7 +172,7 @@ def get_mute_filename(uid):
     return str(uid).casefold().strip()
 
 def is_muted(uid):
-    active_mutes = str(os.listdir(MUTE_DIRECTORY)) - {".gitignore"}
+    active_mutes = set(os.listdir(MUTE_DIRECTORY)) - {".gitignore"}
     fname = get_mute_filename(uid)
     if fname not in active_mutes:
         return None
@@ -287,62 +288,6 @@ def format_time(seconds): # 3 days, 4 hours and 5 seconds
     
     return out
 
-class TimePeriodToSecondsConverter(commands.Converter):
-    unit_conversions = {
-        "s": 1, "sec": 1, "secs": 1, "second": 1, "seconds": 1,
-        "m": 60, "min": 60, "mins": 60, "minute": 60, "minutes": 60,
-        "h": 3600, "hr": 3600, "hrs": 3600, "hour": 3600, "hours": 3600,
-        "d": 86_400, "day": 86_400, "days": 86_400,
-        "month": 2_592_000, "months": 2_592_000,
-        "y": 31_536_000, "yr": 31_536_000, "yrs": 31_536_000, "year": 31_536_000, "years": 31_536_000,
-        "decade": 315_360_000, "decades": 315_360_000,
-        "century": 3_153_600_000, "centuries": 3_153_600_000,
-        "millennium": 31_536_000_000, "millennia":  31_536_000_000
-    }
-    
-    @classmethod
-    def convert_sync(cls, argument: str) -> float:
-        argument = argument.strip()
-        args = argument.split()[:2]
-        
-        if len(args) == 2:
-            period, unit = args
-            try:
-                period = float(period)
-            except ValueError as e:
-                raise commands.BadArgument(f"`{period}` is not a number.") from e
-        else:
-            # use as much of the string as possible for the period float
-            period_str_len = 0
-            for i in range(1, len(argument) + 1):
-                try:
-                    float(argument[:i]) # error if doesn't work
-                    period_str_len = i # it worked!
-                except:
-                    pass # it didn't work, the next might though so don't break
-                    # for ex in "1e5": "1e" will fail but adding the next character makes it work
-            
-            if period_str_len == 0:
-                raise commands.BadArgument(f"`{argument}` is not a valid time period. It should look similar to `10 minutes` or `10m`.")
-            
-            period, unit = float(argument[:period_str_len]), argument[period_str_len:]
-        
-        if unit is None or unit.strip() == "":
-            unit = "minutes"
-        
-        if period < 0:
-            raise commands.BadArgument(f"Negative times are not allowed.")
-        
-        if unit not in cls.unit_conversions:
-            raise commands.BadArgument(
-                f"`{unit}` is not a valid time unit. Here is a list of all valid units:\n*{', '.join(cls.unit_conversions.keys())}*"
-            )
-        
-        return max(1e-9, period * cls.unit_conversions[unit])
-    
-    async def convert(self, ctx, argument: str) -> float:
-        return TimePeriodToSecondsConverter.convert_sync(argument)
-
 '''
     COMMANDS
 '''
@@ -371,27 +316,67 @@ async def ping(ctx):
         check_pong(nonce) # delete the record
         raise
 
+time_unit_conversions = {
+    "s": 1, "sec": 1, "secs": 1, "second": 1, "seconds": 1,
+    "m": 60, "min": 60, "mins": 60, "minute": 60, "minutes": 60,
+    "h": 3600, "hr": 3600, "hrs": 3600, "hour": 3600, "hours": 3600,
+    "d": 86_400, "day": 86_400, "days": 86_400,
+    "month": 2_592_000, "months": 2_592_000,
+    "y": 31_536_000, "yr": 31_536_000, "yrs": 31_536_000, "year": 31_536_000, "years": 31_536_000,
+    "decade": 315_360_000, "decades": 315_360_000,
+    "century": 3_153_600_000, "centuries": 3_153_600_000,
+    "millennium": 31_536_000_000, "millennia":  31_536_000_000
+}
 @bot.command()
 @commands.has_role("Moderator")
 @handle_exceptions
-async def mute(ctx, user: discord.Member, *, period: TimePeriodToSecondsConverter = TimePeriodToSecondsConverter.convert_sync("1 hour")):
-    # check if this user is already muted
-    mute_etr = is_muted(user.id)
-    if mute_etr is not None:
-        mute_etr = round(max(mute_etr, 1))
-        formatted = format_time(mute_etr)
-        await ctx.reply(
-            f"That person is already muted. You could manually `{CMD_PREFIX}unmute {user.id}`, or wait until their mute expires in {formatted}.",
-            mention_author = False
-        )
-        return
+async def mute(ctx, user: discord.Member, *, period: str):
+    period_regex = fr"\s*(\d+(?:\.\d+)?)\s*({'|'.join(sorted(time_unit_conversions.keys(), key=len, reverse=True))})?\s*(.*)\s*"
+    period_match = re.match(period_regex, period)
     
-    formatted = format_time(period)
+    if period_match:
+        qty, unit, reason = period_match.groups()
+    else:
+        qty, unit, reason = '1', 'hours', None
+    input_period = ' '.join(str(x) for x in (qty, unit) if x)
+    
+    if '.' in qty:
+        qty = float(qty)
+        qty_formatted = f"{qty:,.7f}"
+    else:
+        qty = int(qty)
+        qty_formatted = f"{qty:,d}"
+    
+    period = qty * time_unit_conversions.get(unit, 60)
+    
+    # if they're already muted, just up the time
+    try:
+        remove_mute(user.id)
+    except OSError: # they were not already muted
+        await user.add_roles(discord.Object(Roles.muted))
+    log_mute(user.id, time.time() + period)
+    
+    reason = reason or "No reason given."
     
     log_mute(user.id, time.time() + period)
     await user.add_roles(discord.Object(Roles.muted))
+    
+    embed = discord.Embed(
+        title="Muted",
+        description=f"{user.mention} has been <@&{Roles.muted}> for \"{input_period}\"."
+    )
+    embed.add_field(
+        name="Time",
+        value=format_time(period),
+        inline=False
+    )
+    embed.add_field(
+        name="Reason",
+        value=reason,
+        inline=False
+    )
     await ctx.reply(
-        f"{user.mention} has been muted for {formatted}.",
+        embed=embed,
         mention_author = False
     )
 
