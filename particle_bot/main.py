@@ -171,7 +171,7 @@ def get_mute_filename(uid):
     return str(uid).casefold().strip()
 
 def is_muted(uid):
-    active_mutes = os.listdir(MUTE_DIRECTORY)
+    active_mutes = str(os.listdir(MUTE_DIRECTORY)) - {".gitignore"}
     fname = get_mute_filename(uid)
     if fname not in active_mutes:
         return None
@@ -609,7 +609,7 @@ async def unmute_checker():
         return
 
     # list all messages in queue
-    mutes = os.listdir(MUTE_DIRECTORY)
+    mutes = set(os.listdir(MUTE_DIRECTORY)) - {".gitignore"}
     
     for mute in mutes:
         etr = is_muted(mute)

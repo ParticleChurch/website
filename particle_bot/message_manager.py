@@ -114,7 +114,7 @@ def get_message_embed(msg):
     return embed, ping
 
 def pop():
-    messages = os.listdir(MESSAGE_QUEUE_DIRECTORY)
+    messages = set(os.listdir(MESSAGE_QUEUE_DIRECTORY)) - {".gitignore"}
     if len(messages) == 0:
         return None, None, None
     
