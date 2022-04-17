@@ -618,7 +618,7 @@ async def unmute_checker():
 @tasks.loop(minutes = 10)
 @handle_exceptions
 async def status_setter():
-    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.playing, name = "HTTPS://A4G4.COM"))
+    await bot.change_presence(activity = discord.Activity(type = discord.ActivityType.playing, name = "PARTICLE.CHURCH"))
 
 @bot.event
 async def on_ready():
